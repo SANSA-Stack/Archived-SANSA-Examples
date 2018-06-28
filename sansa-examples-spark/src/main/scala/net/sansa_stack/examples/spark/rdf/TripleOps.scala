@@ -1,11 +1,11 @@
 package net.sansa_stack.examples.spark.rdf
 
-import java.net.{ URI => JavaURI }
-import net.sansa_stack.rdf.spark.io.NTripleReader
-import net.sansa_stack.rdf.spark.model.{ JenaSparkRDDOps, TripleRDD }
+import net.sansa_stack.rdf.spark.io._
+import net.sansa_stack.rdf.spark.model._
 import org.apache.spark.sql.SparkSession
-
+import org.apache.jena.riot.Lang
 import scala.collection.mutable
+import org.apache.jena.graph.NodeFactory
 
 object TripleOps {
 
@@ -30,31 +30,27 @@ object TripleOps {
     println("|        Triple Ops example       |")
     println("======================================")
 
-    val ops = JenaSparkRDDOps(spark.sparkContext)
-    import ops._
-
-    val triplesRDD = NTripleReader.load(spark, JavaURI.create(input))
-
-    val graph: TripleRDD = triplesRDD
+    val lang = Lang.NTRIPLES
+    val triples = spark.rdf(lang)(input)
 
     //Triples filtered by subject ( "http://dbpedia.org/resource/Charles_Dickens" )
-    println("All triples related to Dickens:\n" + graph.find(URI("http://dbpedia.org/resource/Charles_Dickens"), ANY, ANY).collect().mkString("\n"))
+    println("All triples related to Dickens:\n" + triples.find(Some(NodeFactory.createURI("http://dbpedia.org/resource/Charles_Dickens")), None, None).collect().mkString("\n"))
 
     //Triples filtered by predicate ( "http://dbpedia.org/ontology/influenced" )
-    println("All triples for predicate influenced:\n" + graph.find(ANY, URI("http://dbpedia.org/ontology/influenced"), ANY).collect().mkString("\n"))
+    println("All triples for predicate influenced:\n" + triples.find(None, Some(NodeFactory.createURI("http://dbpedia.org/ontology/influenced")), None).collect().mkString("\n"))
 
     //Triples filtered by object ( <http://dbpedia.org/resource/Henry_James> )
-    println("All triples influenced by Henry_James:\n" + graph.find(ANY, ANY, URI("<http://dbpedia.org/resource/Henry_James>")).collect().mkString("\n"))
+    println("All triples influenced by Henry_James:\n" + triples.find(None, None, Some(NodeFactory.createURI("http://dbpedia.org/resource/Henry_James"))).collect().mkString("\n"))
 
-    println("Number of triples: " + graph.find(ANY, ANY, ANY).distinct.count())
-    println("Number of subjects: " + graph.getSubjects.distinct.count())
-    println("Number of predicates: " + graph.getPredicates.distinct.count())
-    println("Number of objects: " + graph.getPredicates.distinct.count())
+    println("Number of triples: " + triples.distinct.count())
+    println("Number of subjects: " + triples.getSubjects.distinct.count())
+    println("Number of predicates: " + triples.getPredicates.distinct.count())
+    println("Number of objects: " + triples.getObjects.distinct.count())
 
-    val subjects = graph.filterSubjects(_.isURI()).collect.mkString("\n")
+    val subjects = triples.filterSubjects(_.isURI()).collect.mkString("\n")
 
-    val predicates = graph.filterPredicates(_.isVariable()).collect.mkString("\n")
-    val objects = graph.filterObjects(_.isLiteral()).collect.mkString("\n")
+    val predicates = triples.filterPredicates(_.isVariable()).collect.mkString("\n")
+    val objects = triples.filterObjects(_.isLiteral()).collect.mkString("\n")
 
     //graph.getTriples.take(5).foreach(println(_))
 
