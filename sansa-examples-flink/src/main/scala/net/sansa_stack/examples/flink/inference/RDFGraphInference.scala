@@ -7,18 +7,17 @@ import java.util.Properties
 import scala.io.Source
 
 import com.typesafe.config.ConfigFactory
-import org.apache.flink.api.java.utils.ParameterTool
-import org.apache.flink.api.scala.ExecutionEnvironment
-import org.apache.flink.configuration.Configuration
-import org.apache.flink.runtime.webmonitor.WebMonitorUtils
-
 import net.sansa_stack.inference.flink.data.{ RDFGraphLoader, RDFGraphWriter }
 import net.sansa_stack.inference.flink.forwardchaining.{
   ForwardRuleReasonerOWLHorst,
   ForwardRuleReasonerRDFS
 }
-import net.sansa_stack.inference.rules.ReasoningProfile._
 import net.sansa_stack.inference.rules.{ RDFSLevel, ReasoningProfile }
+import net.sansa_stack.inference.rules.ReasoningProfile._
+import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.api.scala.ExecutionEnvironment
+import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.webmonitor.WebMonitorUtils
 
 object RDFGraphInference {
 
@@ -40,14 +39,14 @@ object RDFGraphInference {
   }
 
   def run(
-    args:              Array[String],
-    input:             Seq[URI],
-    output:            URI,
-    profile:           ReasoningProfile,
+    args: Array[String],
+    input: Seq[URI],
+    output: URI,
+    profile: ReasoningProfile,
     writeToSingleFile: Boolean,
-    sortedOutput:      Boolean,
-    propertiesFile:    File,
-    jobName:           String): Unit = {
+    sortedOutput: Boolean,
+    propertiesFile: File,
+    jobName: String): Unit = {
 
     // read reasoner optimization properties
     val reasonerConf =
@@ -92,20 +91,17 @@ object RDFGraphInference {
     println(s"|G_inf| = ${inferredGraph.size()}")
 
     val jn = if (jobName.isEmpty) s"RDF Graph Inference ($profile)" else jobName
-
-    // run the program
-    env.execute(jn)
   }
 
   // the config object
   case class Config(
-    in:                Seq[URI]         = Seq(),
-    out:               URI              = new URI("."),
-    profile:           ReasoningProfile = ReasoningProfile.RDFS,
-    writeToSingleFile: Boolean          = false,
-    sortedOutput:      Boolean          = false,
-    propertiesFile:    File             = null,
-    jobName:           String           = "") // new File(getClass.getResource("reasoner.properties").toURI)
+    in: Seq[URI] = Seq(),
+    out: URI = new URI("."),
+    profile: ReasoningProfile = ReasoningProfile.RDFS,
+    writeToSingleFile: Boolean = false,
+    sortedOutput: Boolean = false,
+    propertiesFile: File = null,
+    jobName: String = "") // new File(getClass.getResource("reasoner.properties").toURI)
 
   // read ReasoningProfile enum
   implicit val profilesRead: scopt.Read[ReasoningProfile.Value] =

@@ -1,17 +1,18 @@
 package net.sansa_stack.examples.spark.query
 
-import java.net.URI
-import org.apache.jena.riot.Lang
-import net.sansa_stack.rdf.spark.io._
-import net.sansa_stack.rdf.spark.partition.core.RdfPartitionUtilsSpark
-import net.sansa_stack.query.spark.sparqlify.{ QueryExecutionFactorySparqlifySpark, QueryExecutionUtilsSpark, QueryExecutionSpark, SparqlifyUtils3 }
-import org.aksw.jena_sparql_api.server.utils.FactoryBeanSparqlServer
-import org.apache.spark.sql.SparkSession
 import java.awt.Desktop
+import java.net.URI
 
 import scala.collection.mutable
 
-/*
+import net.sansa_stack.query.spark.sparqlify.{ QueryExecutionFactorySparqlifySpark, QueryExecutionSpark, QueryExecutionUtilsSpark, SparqlifyUtils3 }
+import net.sansa_stack.rdf.spark.io._
+import net.sansa_stack.rdf.spark.partition.core.RdfPartitionUtilsSpark
+import org.aksw.jena_sparql_api.server.utils.FactoryBeanSparqlServer
+import org.apache.jena.riot.Lang
+import org.apache.spark.sql.SparkSession
+
+/**
  * Run SPARQL queries over Spark using Sparqlify approach.
  */
 object Sparqlify {
@@ -43,8 +44,8 @@ object Sparqlify {
     val lang = Lang.NTRIPLES
     val graphRdd = spark.rdf(lang)(input)
 
-    val checkendpoint = endpoint match {
-      case j if(endpoint) =>
+    endpoint match {
+      case j if endpoint =>
         val partitions = RdfPartitionUtilsSpark.partitionGraph(graphRdd)
         val rewriter = SparqlifyUtils3.createSparqlSqlRewriter(spark, partitions)
 
@@ -52,13 +53,13 @@ object Sparqlify {
 
         val qef = new QueryExecutionFactorySparqlifySpark(spark, rewriter)
         val server = FactoryBeanSparqlServer.newInstance.setSparqlServiceFactory(qef).setPort(port).create()
-        if (Desktop.isDesktopSupported()) {
-          Desktop.getDesktop().browse(new URI("http://localhost:" + port + "/sparql"));
+        if (Desktop.isDesktopSupported) {
+          Desktop.getDesktop.browse(URI.create("http://localhost:" + port + "/sparql"))
         }
         server.join()
       case _ =>
         import net.sansa_stack.query.spark.query._
-        //val sparqlQuery = "SELECT * WHERE {?s ?p ?o} LIMIT 10"
+        // val sparqlQuery = "SELECT * WHERE {?s ?p ?o} LIMIT 10"
         val result = graphRdd.sparql(sparqlQuery)
         result.rdd.foreach(println)
     }
@@ -77,11 +78,11 @@ object Sparqlify {
       action((x, c) => c.copy(in = x)).
       text("path to file that contains the data (in N-Triples format)")
 
-    opt[String]('q', "sparql").optional().valueName("query").
+    opt[String]('q', "sparql").optional().valueName("<query>").
       action((x, c) => c.copy(sparql = x)).
       text("a SPARQL query")
 
-    opt[Boolean]('e', "endpoint").optional().valueName("SPARQL endoint enabled").
+    opt[Boolean]('e', "endpoint").optional().valueName("SPARQL endpoint enabled").
       action((x, c) => c.copy(endpoint = x)).
       text("enable SPARQL endpoint , default:'enabled'")
 
@@ -90,11 +91,11 @@ object Sparqlify {
       text("port that SPARQL endpoint will be exposed, default:'7531'")
 
     checkConfig(c =>
-      if (c.endpoint == false && c.sparql.isEmpty) failure("Option --sparql must not be empty if endpoint is disabled")
+      if (!c.endpoint && c.sparql.isEmpty) failure("Option --sparql must not be empty if endpoint is disabled")
       else success)
 
     checkConfig(c =>
-      if (c.endpoint == true && c.port.isEmpty) failure("Option --port ust not be empty if endpoint is enabled")
+      if (c.endpoint && c.port.isEmpty) failure("Option --port ust not be empty if endpoint is enabled")
       else success)
 
     help("help").text("prints this usage text")

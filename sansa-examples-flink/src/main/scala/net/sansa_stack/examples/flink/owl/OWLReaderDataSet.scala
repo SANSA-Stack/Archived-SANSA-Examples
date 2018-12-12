@@ -1,9 +1,11 @@
 package net.sansa_stack.examples.flink.owl
 
-import net.sansa_stack.owl.flink.dataset.{ FunctionalSyntaxOWLAxiomsDataSetBuilder, ManchesterSyntaxOWLAxiomsDataSetBuilder }
-import org.apache.flink.api.scala.ExecutionEnvironment
+import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer
 
 import scala.collection.mutable
+import net.sansa_stack.owl.flink.owl._
+import org.apache.flink.api.scala.ExecutionEnvironment
+
 
 object OWLReaderDataSet {
 
@@ -20,13 +22,18 @@ object OWLReaderDataSet {
 
     println(".============================================.")
     println("| Dataset OWL reader example (" + syntax + " syntax)|")
-    println("`============================================´")
+    println(".============================================.")
 
     val env = ExecutionEnvironment.getExecutionEnvironment
+    // scalastyle:off classforname
+    env.getConfig.addDefaultKryoSerializer(
+      Class.forName("java.util.Collections$UnmodifiableCollection"),
+      classOf[UnmodifiableCollectionsSerializer])
+    // scalastyle:on classforname
 
     val dataSet = syntax match {
-      case "fun"   => FunctionalSyntaxOWLAxiomsDataSetBuilder.build(env, input)
-      case "manch" => ManchesterSyntaxOWLAxiomsDataSetBuilder.build(env, input)
+      case "fun" => env.owl(Syntax.FUNCTIONAL)(input)
+      case "manch" => env.owl(Syntax.MANCHESTER)(input)
       case "owl_xml" =>
         throw new RuntimeException("'" + syntax + "' - Not supported, yet.")
       case _ =>
@@ -38,7 +45,7 @@ object OWLReaderDataSet {
   }
 
   case class Config(
-    in:     String = "",
+    in: String = "",
     syntax: String = "")
 
   // the CLI parser

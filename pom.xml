@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sansa-stack</groupId>
 	<artifactId>sansa-examples-parent_2.11</artifactId>
-	<version>2018-06</version>
+	<version>2018-12</version>
 	<packaging>pom</packaging>
 	<name>SANSA-Examples - Parent</name>
 	<description>SANSA examples</description>
@@ -58,11 +58,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.11.11</scala.version>
 		<scala.binary.version>2.11</scala.binary.version>
-		<spark.version>2.3.1</spark.version>
-		<flink.version>1.5.0</flink.version>
+		<spark.version>2.4.0</spark.version>
+		<flink.version>1.7.0</flink.version>
 		<hadoop.version>2.8.3</hadoop.version>
-		<jena.version>3.7.0</jena.version>
-		<sansa.version>0.4.0</sansa.version>
+		<jena.version>3.9.0</jena.version>
+		<sansa.rdf.version>0.5.0</sansa.rdf.version>
+		<sansa.owl.version>0.4.1</sansa.owl.version>
+		<sansa.query.version>0.5.0</sansa.query.version>
+		<sansa.inference.version>0.5.0</sansa.inference.version>
+		<sansa.ml.version>0.5.0</sansa.ml.version>
+		<scalastyle.config.path>${project.basedir}/scalastyle-config.xml</scalastyle.config.path>
 	</properties>
 
 	<dependencyManagement>
@@ -167,61 +172,55 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-rdf-spark_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.rdf.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-rdf-flink_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.rdf.version}</version>
 			</dependency>
 			<!-- OWL Layer -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-owl-spark_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.owl.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-owl-flink_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.owl.version}</version>
 			</dependency>
 
 			<!-- Query Layer -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-query-spark_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.query.version}</version>
 			</dependency>
-
 
 			<!-- Inference Layer -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>sansa-inference-parent_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-inference-spark_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.inference.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-inference-flink_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.inference.version}</version>
 			</dependency>
 
 			<!-- ML Layer -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-ml-spark_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.ml.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sansa-ml-flink_${scala.binary.version}</artifactId>
-				<version>${sansa.version}</version>
+				<version>${sansa.ml.version}</version>
 			</dependency>
 
 			<dependency>
@@ -231,6 +230,25 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>org.glassfish.jersey</groupId>
+				<artifactId>jersey-bom</artifactId>
+				<version>2.26-b03</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.11</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>1.18</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -281,6 +299,32 @@
 					<version>2.19.1</version>
 				</plugin>
 
+				<!-- Scalastyle -->
+				<plugin>
+					<groupId>org.scalastyle</groupId>
+					<artifactId>scalastyle-maven-plugin</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<verbose>false</verbose>
+						<failOnViolation>true</failOnViolation>
+						<includeTestSourceDirectory>true</includeTestSourceDirectory>
+						<failOnWarning>false</failOnWarning>
+						<sourceDirectory>${project.basedir}/src/main/scala</sourceDirectory>
+						<testSourceDirectory>${project.basedir}/src/test/scala</testSourceDirectory>
+						<!-- we use a central config located in the root directory -->
+						<configLocation>${scalastyle.config.path}</configLocation>
+						<outputFile>${project.basedir}/scalastyle-output.xml</outputFile>
+						<outputEncoding>UTF-8</outputEncoding>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
 				<!-- Scalatest -->
 				<plugin>
 					<groupId>org.scalatest</groupId>
@@ -303,6 +347,20 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>root-dir</id>
+			<activation>
+				<file>
+					<exists>${project.basedir}/../../scalastyle-config.xml</exists>
+				</file>
+			</activation>
+			<properties>
+				<scalastyle.config.path>${project.basedir}/../scalastyle-config.xml</scalastyle.config.path>
+			</properties>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>

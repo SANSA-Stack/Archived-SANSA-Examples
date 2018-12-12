@@ -1,10 +1,13 @@
 package net.sansa_stack.examples.flink.rdf
 
-import scala.collection.mutable
 import java.io.File
+
+import scala.collection.mutable
+
+import net.sansa_stack.rdf.flink.io._
+import net.sansa_stack.rdf.flink.stats._
 import org.apache.flink.api.scala.ExecutionEnvironment
-import net.sansa_stack.rdf.flink.data.RDFGraphLoader
-import net.sansa_stack.rdf.flink.stats.RDFStatistics
+import org.apache.jena.riot.Lang
 
 object RDFStats {
 
@@ -27,16 +30,15 @@ object RDFStats {
 
     val env = ExecutionEnvironment.getExecutionEnvironment
 
-    val rdfgraph = RDFGraphLoader.loadFromFile(input, env)
+    val triples = env.rdf(Lang.NTRIPLES)(input)
 
-    // compute  criterias
-    val rdf_statistics = RDFStatistics(rdfgraph, env)
-    val stats = rdf_statistics.run()
-    rdf_statistics.voidify(stats, rdf_stats_file, output)
+    // compute stats
+    val rdf_statistics = triples.stats
+      .voidify(rdf_stats_file, output)
   }
 
   case class Config(
-    in:  String = "",
+    in: String = "",
     out: String = "")
 
   // the CLI parser

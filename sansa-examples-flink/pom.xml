@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>sansa-examples-parent_2.11</artifactId>
 		<groupId>net.sansa-stack</groupId>
-		<version>2018-06</version>
+		<version>2018-12</version>
 	</parent>
 	<artifactId>sansa-examples-flink_2.11</artifactId>
 	<name>SANSA Examples - Apache Flink</name>
@@ -196,6 +196,10 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.scalastyle</groupId>
+				<artifactId>scalastyle-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

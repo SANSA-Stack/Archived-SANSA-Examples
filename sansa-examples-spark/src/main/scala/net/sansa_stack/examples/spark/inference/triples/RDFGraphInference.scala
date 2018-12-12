@@ -1,17 +1,14 @@
-package net.sansa_stack.examples.spark.inference
+package net.sansa_stack.examples.spark.inference.triples
 
 import java.net.URI
-
-import org.apache.jena.graph.{ Node, NodeFactory }
-import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
-
-import net.sansa_stack.inference.data.RDFTriple
-import net.sansa_stack.inference.rules.ReasoningProfile._
 import net.sansa_stack.inference.rules.{ RDFSLevel, ReasoningProfile }
+import net.sansa_stack.inference.rules.ReasoningProfile._
 import net.sansa_stack.inference.spark.data.loader.RDFGraphLoader
 import net.sansa_stack.inference.spark.data.writer.RDFGraphWriter
 import net.sansa_stack.inference.spark.forwardchaining.triples.{ForwardRuleReasonerOWLHorst, ForwardRuleReasonerRDFS, TransitiveReasoner}
+import org.apache.jena.graph.{ Node, NodeFactory }
+import org.apache.spark.sql.SparkSession
+import scala.collection.Seq
 
 object RDFGraphInference {
 
@@ -45,7 +42,7 @@ object RDFGraphInference {
     // create reasoner
     val reasoner = profile match {
       case TRANSITIVE => new TransitiveReasoner(spark.sparkContext, properties, parallelism)
-      case RDFS       => new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism)
+      case RDFS => new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism)
       case RDFS_SIMPLE =>
         val r = new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism)
         r.level = RDFSLevel.SIMPLE
@@ -64,13 +61,13 @@ object RDFGraphInference {
   }
 
   case class Config(
-    in:                Seq[URI]         = Seq(),
-    out:               URI              = new URI("."),
-    properties:        Seq[Node]        = Seq(),
-    profile:           ReasoningProfile = ReasoningProfile.RDFS,
-    writeToSingleFile: Boolean          = false,
-    sortedOutput:      Boolean          = false,
-    parallelism:       Int              = 4)
+    in: Seq[URI] = Seq(),
+    out: URI = new URI("."),
+    properties: Seq[Node] = Seq(),
+    profile: ReasoningProfile = ReasoningProfile.RDFS,
+    writeToSingleFile: Boolean = false,
+    sortedOutput: Boolean = false,
+    parallelism: Int = 4)
 
   // read ReasoningProfile enum
   implicit val profilesRead: scopt.Read[ReasoningProfile.Value] =
