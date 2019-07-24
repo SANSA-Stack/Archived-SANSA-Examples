@@ -26,7 +26,7 @@ object RDFQualityAssessment {
 
     val spark = SparkSession.builder
       .appName(s"RDF Quality Assessment Example $rdf_quality_file")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

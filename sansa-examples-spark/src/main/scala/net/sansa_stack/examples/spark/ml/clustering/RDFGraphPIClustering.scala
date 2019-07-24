@@ -25,7 +25,7 @@ object RDFGraphPIClustering {
 
     val spark = SparkSession.builder
       .appName(s"Power Iteration Clustering example ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
     System.setProperty("spark.akka.frameSize", "2000")

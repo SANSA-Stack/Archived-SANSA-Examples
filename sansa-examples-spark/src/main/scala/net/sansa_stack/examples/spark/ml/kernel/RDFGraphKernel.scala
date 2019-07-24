@@ -26,7 +26,7 @@ object RDFGraphKernel {
 
     val spark = SparkSession.builder
       .appName(s" RDF Graph Kernel example ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

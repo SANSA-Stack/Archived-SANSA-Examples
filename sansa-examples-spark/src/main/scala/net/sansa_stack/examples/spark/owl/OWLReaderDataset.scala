@@ -22,7 +22,7 @@ object OWLReaderDataset {
 
     val spark = SparkSession.builder
       .appName(s"Dataset OWL reader ( $input + )($syntax)")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .config("spark.kryo.registrator", "net.sansa_stack.owl.spark.dataset.UnmodifiableCollectionKryoRegistrator")
       .getOrCreate()

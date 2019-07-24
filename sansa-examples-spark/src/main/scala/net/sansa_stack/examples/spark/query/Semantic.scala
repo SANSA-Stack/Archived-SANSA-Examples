@@ -35,7 +35,7 @@ object Semantic {
     println("===========================================")
 
     val spark = SparkSession.builder
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .appName("SANSA - Semantic Partioning")
       .getOrCreate()

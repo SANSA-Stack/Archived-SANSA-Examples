@@ -29,7 +29,7 @@ object DataLake {
 
     val spark = SparkSession.builder
       .appName(s"DataLake (CSV) example")
-      .master("local[*]")
+//      .master("local[*]")
       .getOrCreate()
 
     // val result = spark.sparqlDL(queryFile, mappingsFile, configFile)

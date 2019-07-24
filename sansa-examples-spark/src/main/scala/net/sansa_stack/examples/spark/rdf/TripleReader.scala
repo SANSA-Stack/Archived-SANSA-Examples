@@ -20,7 +20,7 @@ object TripleReader {
 
     val spark = SparkSession.builder
       .appName(s"Triple reader example  $input")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

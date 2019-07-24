@@ -20,7 +20,7 @@ object CrossValidation {
 
     val spark = SparkSession.builder
       .appName(s"Cross validation techniques example  $input")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

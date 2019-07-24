@@ -30,7 +30,7 @@ object MineRules {
 
     val spark = SparkSession.builder
       .appName(s" Mines the Rules example ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

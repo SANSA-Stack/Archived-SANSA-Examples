@@ -34,7 +34,7 @@ object GraphQuery {
       .setInputGraphFile(config.input)
       .setInputQueryFile(config.query.head)
       .setLang(Lang.NTRIPLES)
-      .setMaster("local[*]")
+//      .setMaster("local[*]")
 
     // load graph
     log.info("Start to load graph")

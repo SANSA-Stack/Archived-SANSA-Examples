@@ -25,7 +25,7 @@ object BorderFlowClustering {
 
     val spark = SparkSession.builder
       .appName(s"BorderFlow example: ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.hadoop.validateOutputSpecs", "false")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()

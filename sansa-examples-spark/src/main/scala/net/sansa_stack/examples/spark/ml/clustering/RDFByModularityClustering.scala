@@ -22,7 +22,7 @@ object RDFByModularityClustering {
 
     val spark = SparkSession.builder
       .appName(s"RDF By Modularity Clustering example example ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 

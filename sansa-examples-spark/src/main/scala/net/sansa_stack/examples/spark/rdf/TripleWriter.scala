@@ -24,7 +24,7 @@ object TripleWriter {
 
     val spark = SparkSession.builder
       .appName(s"Triple writer example ( $input )")
-      .master("local[*]")
+//      .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 
