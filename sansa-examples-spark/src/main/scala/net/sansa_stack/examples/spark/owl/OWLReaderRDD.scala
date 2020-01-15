@@ -1,7 +1,6 @@
 package net.sansa_stack.examples.spark.owl
 
 import net.sansa_stack.owl.spark.owl._
-
 import org.apache.spark.sql.SparkSession
 
 
@@ -32,14 +31,13 @@ object OWLReaderRDD {
     val rdd = syntax match {
       case "fun" => spark.owl(Syntax.FUNCTIONAL)(input)
       case "manch" => spark.owl(Syntax.MANCHESTER)(input)
-      case "owl_xml" =>
-        throw new RuntimeException("'" + syntax + "' - Not supported, yet.")
+      case "owl_xml" => spark.owl(Syntax.OWLXML)(input)
       case _ =>
         throw new RuntimeException("Invalid syntax type: '" + syntax + "'")
     }
 
     rdd.take(10).foreach(println(_))
-
+    spark.stop()
   }
 
   case class Config(
