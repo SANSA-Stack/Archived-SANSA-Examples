@@ -1,3 +1,9 @@
+# Archived Repository - Do not use this repository anymore!
+
+SANSA got easier to use! All its code has been consolidated into a single repository at https://github.com/SANSA-Stack/SANSA-Stack
+
+
+
 # SANSA-Examples
 [![Build Status](https://ci.aksw.org/jenkins/job/SANSA%20Examples/job/develop/badge/icon)](https://ci.aksw.org/jenkins/job/SANSA%20Examples/job/develop/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
